@@ -6,7 +6,11 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.timer{
+  margin-left: 28rem;
+  background-color: #8a51f5;
+  width: 150px;
+}
 
 .App-header {
   background-color: #14bdac;

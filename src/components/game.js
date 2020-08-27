@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "../App.css";
 import Countdown from "react-countdown-now";
 
-const Completionist = () => <span>Time over</span>;
+const Completionist = () => <span>Time over well played!</span>;
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -80,7 +80,7 @@ class Game extends Component {
     let have_winner = winner(this.state.board);
     let keep_playing = have_winner === null ? true : false;
 
-    if (have_winner !== null) alert(have_winner + " won!");
+    if (have_winner !== null) alert(" Player " +have_winner+ "   won !" );
 
     return (
       <div className="master">
