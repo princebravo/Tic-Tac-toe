@@ -36,7 +36,7 @@
 }
 
 .board {
-  padding-top: 5%;
+  
   display: flex;
   width: 600px;
   height: 600px;
@@ -49,7 +49,7 @@
     width: 200px;
     height: 200px;
     box-sizing: border-box;
-    border: 5px solid black;
+    border: 5px solid #63a19b;
     font-size: 5em;
     display: flex;
     justify-content: center;
@@ -63,10 +63,10 @@
 
 .reset-button {
   display: flex;
-  width: 120px;
+  width: 140px;
   height: 60px;
   font-size: 25px;
-  background-color: #21E44F;
+  background-color: #ff3f04;
   justify-content: center;
   align-items: center;
   border: 2px solid black;

@@ -1,54 +1,62 @@
-import React, { Component } from 'react';
-import '../App.css';
+import React, { Component } from "react";
+import "../App.css";
+import Countdown from "react-countdown-now";
 
+const Completionist = () => <span>Time over</span>;
 class Game extends Component {
-
   constructor(props) {
     super(props);
-    
+
     this.handleResetButton = this.handleResetButton.bind(this);
     this.handleSinglePlayerButton = this.handleSinglePlayerButton.bind(this);
     this.handleMultiPlayerButton = this.handleMultiPlayerButton.bind(this);
 
     this.state = {
       vsPC: null,
-      player_one_symbol: 'X',
-      player_two_symbol: 'O',
+      player_one_symbol: "X",
+      player_two_symbol: "O",
       x_turn: true,
       board: ["", "", "", "", "", "", "", "", ""],
     };
   }
 
   handleCellClick(index, keep_playing) {
-    // If the position is empty and the game isn't over yet 
+    // If the position is empty and the game isn't over yet
     // and the user selected between single or multiplayer
-    if (this.state.board[index] === "" && keep_playing === true && this.state.vsPC !== null) {
+    if (
+      this.state.board[index] === "" &&
+      keep_playing === true &&
+      this.state.vsPC !== null
+    ) {
       let update_board = this.state.board;
 
       // If it's multiplayer, update the symbol and turn
       if (this.state.vsPC === false) {
-        let symbol = this.state.x_turn ? this.state.player_one_symbol : this.state.player_two_symbol;
+        let symbol = this.state.x_turn
+          ? this.state.player_one_symbol
+          : this.state.player_two_symbol;
         let next_turn = !this.state.x_turn;
         update_board[index] = symbol;
 
         // Update the state
         this.setState({
           board: update_board,
-          x_turn: next_turn, 
-        });   
+          x_turn: next_turn,
+        });
       }
 
       // If it's singleplayer
       if (this.state.vsPC === true) {
         update_board[index] = this.state.player_one_symbol;
-        
+
         // Update the state
-        this.setState({board: update_board});
+        this.setState({ board: update_board });
 
         let ai_index = find_best_move(update_board);
-        if (ai_index !== -4) update_board[ai_index] = this.state.player_two_symbol; 
+        if (ai_index !== -4)
+          update_board[ai_index] = this.state.player_two_symbol;
 
-        this.setState({board: update_board});
+        this.setState({ board: update_board });
       }
     }
   }
@@ -56,18 +64,16 @@ class Game extends Component {
   handleResetButton() {
     this.setState({
       board: ["", "", "", "", "", "", "", "", ""],
-      x_turn: true
+      x_turn: true,
     });
   }
 
   handleSinglePlayerButton() {
-    if (this.state.vsPC === null) 
-      this.setState({vsPC: true});
+    if (this.state.vsPC === null) this.setState({ vsPC: true });
   }
 
   handleMultiPlayerButton() {
-    if (this.state.vsPC === null) 
-      this.setState({vsPC: false});
+    if (this.state.vsPC === null) this.setState({ vsPC: false });
   }
 
   render() {
@@ -78,23 +84,58 @@ class Game extends Component {
 
     return (
       <div className="master">
+        <div className="timer">
+          <Countdown date={Date.now() + 5000}>
+            <Completionist />
+          </Countdown>
+        </div>
         <div className="game">
           <div className="board">
             {this.state.board.map((cell, index) => {
-              return <div className="square" key={index} onClick={() => this.handleCellClick(index, keep_playing)}> {cell} </div>
+              return (
+                <div
+                  className="square"
+                  key={index}
+                  onClick={() => this.handleCellClick(index, keep_playing)}
+                >
+                  {" "}
+                  {cell}{" "}
+                </div>
+              );
             })}
           </div>
         </div>
         <div className="side-bar">
-          <div className="reset-button" onClick={this.handleResetButton}> Reset </div>
+          <div className="reset-button" onClick={this.handleResetButton}>
+            {" "}
+            Start/Reset{" "}
           </div>
-          <div className="button-line">
-            <div className={this.state.vsPC === null ? "active-singleplayer-button" : "deactived-singleplayer-button"} 
-            onClick={this.handleSinglePlayerButton}> Single Player </div>
-            <div className={this.state.vsPC === null ? "active-multiplayer-button" : "deactived-multiplayer-button"} 
-            onClick={this.handleMultiPlayerButton}> Multiplayer </div>
+        </div>
+        <div className="button-line">
+          <h4>Please select the player to start the game</h4>
+          <div
+            className={
+              this.state.vsPC === null
+                ? "active-singleplayer-button"
+                : "deactived-singleplayer-button"
+            }
+            onClick={this.handleSinglePlayerButton}
+          >
+            {" "}
+            Single Player{" "}
           </div>
-        
+          <div
+            className={
+              this.state.vsPC === null
+                ? "active-multiplayer-button"
+                : "deactived-multiplayer-button"
+            }
+            onClick={this.handleMultiPlayerButton}
+          >
+            {" "}
+            Multiplayer{" "}
+          </div>
+        </div>
       </div>
     );
   }
@@ -109,12 +150,17 @@ function winner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
 
   for (let i = 0; i < lines.length; i++) {
     let [a, b, c] = lines[i];
-    if (squares[a] !== "" && squares[a] === squares[b] && squares[a] === squares[c] && squares[b] === squares[c])
+    if (
+      squares[a] !== "" &&
+      squares[a] === squares[b] &&
+      squares[a] === squares[c] &&
+      squares[b] === squares[c]
+    )
       return squares[a];
   }
 
@@ -122,7 +168,7 @@ function winner(squares) {
 }
 
 function arrayToMat(squares) {
-  let mat = []
+  let mat = [];
   let k = 0;
 
   for (let i = 0; i < 3; i++) {
@@ -145,32 +191,47 @@ function hasMovesLeft(mat) {
 }
 
 function evaluate(mat, depth) {
-
   // Check every row
   for (let i = 0; i < 3; i++) {
-    if (mat[i][0] === mat[i][1] && mat[i][0] === mat[i][2] && mat[i][1] === mat[i][2]) {
-      if (mat[i][0] === 'O') return 100 - depth;
-      if (mat[i][0] === 'X') return depth - 100;
+    if (
+      mat[i][0] === mat[i][1] &&
+      mat[i][0] === mat[i][2] &&
+      mat[i][1] === mat[i][2]
+    ) {
+      if (mat[i][0] === "O") return 100 - depth;
+      if (mat[i][0] === "X") return depth - 100;
     }
   }
 
   // Check every col
   for (let j = 0; j < 3; j++) {
-    if (mat[0][j] === mat[1][j] && mat[0][j] === mat[2][j] && mat[1][j] === mat[2][j]) {
-      if (mat[0][j] === 'O') return 100 - depth;
-      if (mat[0][j] === 'X') return depth - 100;
+    if (
+      mat[0][j] === mat[1][j] &&
+      mat[0][j] === mat[2][j] &&
+      mat[1][j] === mat[2][j]
+    ) {
+      if (mat[0][j] === "O") return 100 - depth;
+      if (mat[0][j] === "X") return depth - 100;
     }
   }
 
   // Check the diagonals
-  if (mat[0][0] === mat[1][1] && mat[0][0] === mat[2][2] && mat[1][1] === mat[2][2]) {
-    if (mat[0][0] === 'O') return 100 - depth;
-    if (mat[0][0] === 'X') return depth - 100;
+  if (
+    mat[0][0] === mat[1][1] &&
+    mat[0][0] === mat[2][2] &&
+    mat[1][1] === mat[2][2]
+  ) {
+    if (mat[0][0] === "O") return 100 - depth;
+    if (mat[0][0] === "X") return depth - 100;
   }
 
-  if (mat[0][2] === mat[1][1] && mat[0][2] === mat[2][0] && mat[1][1] === mat[2][0]) {
-    if (mat[0][2] === 'O') return 100 - depth;
-    if (mat[0][2] === 'X') return depth - 100;
+  if (
+    mat[0][2] === mat[1][1] &&
+    mat[0][2] === mat[2][0] &&
+    mat[1][1] === mat[2][0]
+  ) {
+    if (mat[0][2] === "O") return 100 - depth;
+    if (mat[0][2] === "X") return depth - 100;
   }
 
   // If the game hasn't finished yet
@@ -179,8 +240,8 @@ function evaluate(mat, depth) {
 
 function minmax(mat, depth, get_max) {
   if (hasMovesLeft(mat) === false) {
-    return evaluate(mat, depth);    
-  } 
+    return evaluate(mat, depth);
+  }
 
   let val = evaluate(mat, depth);
 
@@ -192,42 +253,42 @@ function minmax(mat, depth, get_max) {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (mat[i][j] === "") {
-          mat[i][j] = 'O';
-          best = Math.max(best, minmax(mat, depth+1, !get_max));
+          mat[i][j] = "O";
+          best = Math.max(best, minmax(mat, depth + 1, !get_max));
           mat[i][j] = "";
         }
       }
     }
 
     return best;
-  }
-
-  else {
+  } else {
     let best = Infinity;
-    
+
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (mat[i][j] === "") {
-          mat[i][j] = 'X';
-          best = Math.min(best, minmax(mat, depth+1, !get_max));
+          mat[i][j] = "X";
+          best = Math.min(best, minmax(mat, depth + 1, !get_max));
           mat[i][j] = "";
         }
       }
     }
-    
+
     return best;
   }
-
 }
 
 function find_best_move(squares) {
   let mat = arrayToMat(squares);
-  let val, row = -1, col = -1, best = -Infinity;
+  let val,
+    row = -1,
+    col = -1,
+    best = -Infinity;
 
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (mat[i][j] === "") {
-        mat[i][j] = 'O';
+        mat[i][j] = "O";
         val = minmax(mat, 0, false);
         mat[i][j] = "";
 
@@ -240,7 +301,7 @@ function find_best_move(squares) {
     }
   }
 
-  return (3 * row) + col;
+  return 3 * row + col;
 }
 
 export default Game;
